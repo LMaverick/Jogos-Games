@@ -52,12 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ]
 
+    cardArray.sort(() => 0.5 - Math.random()) 
+
     const grid = document.querySelector('.grid')
     const resultDisplay = document.querySelector('#result')
     var cardsChosen = []
     var cardsChosenId = []
     var cardsWon = []
-
+    var ms = document.querySelector('.msg')
+    
    //create your board
    function createBoard() {
        for (let i = 0; i < cardArray.length; i++) {
@@ -70,26 +73,31 @@ document.addEventListener('DOMContentLoaded', () => {
        }
    } 
 
+  
    //check for matches
    function checkForMatch() {
        var cards = document.querySelectorAll('img')
        const optionOneId = cardsChosenId[0]
        const optionTwoId = cardsChosenId[1]
        if (cardsChosen[0] === cardsChosen[1]) {
-           alert('You found a match (Você encontrou um par)')
+           ms.innerText = "You found a match | Você encontrou um par"
            cards[optionOneId].setAttribute('src', 'img/white.png')
            cards[optionTwoId].setAttribute('src', 'img/white.png')
            cardsWon.push(cardsChosen)
 
        } else {
-        alert('Sorry, try again (Tente novamente)')
+        ms.innerText = "Sorry, try again | Tente novamente"
         cards[optionOneId].setAttribute('src', 'img/blank.png')
         cards[optionTwoId].setAttribute('src', 'img/blank.png') 
        }
 
        cardsChosen = []
        cardsChosenId = []
-       resultDisplay
+       resultDisplay.textContent = cardsWon.length
+       if (cardsWon.length === cardArray.length/2) {
+           resultDisplay.textContent = 'Congratulations! ( Parabéns! )'
+
+       }
 
 
    }
