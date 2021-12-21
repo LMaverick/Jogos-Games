@@ -83,9 +83,9 @@ const reset = function (){
     hero.y = canvas.height / 2;
 
     //posiciona monstros randomicamente na tela
-    monster.x = 44 + (Math.randow() * (canvas.width - 75)) // 44 é o tamanho da sprite e 75 é pra ele n grudar e cortar o mosntro no meio caso ele spawne perto
+    monster.x = 44 + (Math.random() * (canvas.width - 75)) // 44 é o tamanho da sprite e 75 é pra ele n grudar e cortar o mosntro no meio caso ele spawne perto
 
-    monster.y = 70 + (Math.randow() * (canvas.height - 75)) 
+    monster.y = 70 + (Math.random() * (canvas.height - 75)) 
 
 }
 
@@ -116,3 +116,50 @@ const update = function(modifier){
     }
 
 }
+
+// renderiza o jogo
+const render = function(){
+    if (bgReady){
+        ctx.drawImage(bgImage, 0, 0);
+
+    }
+
+    if (heroReady){
+        ctx.drawImage(heroImage, hero.x, hero.y);
+
+    }
+
+    if (monsterReady){
+        ctx.drawImage(monsterImage, monster.x, monster.y)
+    }
+
+    ctx.fillStyle = 'rgb(250, 250, 250)'
+    ctx.font = '24px Helvetica'
+    ctx.tetAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Monstros pegos: ' + monsterPego, 32, 32);
+
+}
+
+//controla o loop do jogo
+const main = function(){
+    const now = Date.now();
+    const delta = now - then;
+    update(delta / 1000);
+    render()
+    then = now;
+
+    //executa isso o mais breve possivel
+    requestAnimationFrame(main);
+
+}
+// suporte cross-browser para requestAnimationFrame
+const w = window;
+const requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame
+
+//que comece o jogo
+let then = Date.now();
+reset();
+main();
+
+
