@@ -20,8 +20,8 @@ let quadrado = (num1, num2) => {
 
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = 512;
-canvas.height = 480;
+canvas.width = 384;
+canvas.height = 256;
 document.body.appendChild(canvas)
 
 //imagem de fundo
@@ -42,3 +42,77 @@ heroImage.onload = function(){
     heroReady = true;
 }
 heroImage.src = './player.png'
+
+//imagem do monstro
+let monsterReady = false;
+const monsterImage = new Image()
+monsterImage.onload = function(){
+    monsterReady = true;
+}
+monsterImage.src = './monster.png'
+
+//objetos do jogo
+const hero = {
+    speed: 256 // movimento de pixel por segundo
+
+}
+const monster = {
+
+}
+
+let monsterPego = 0;
+
+// controle do teclado para movimento
+const keysDown = {
+
+}
+
+window.addEventListener('keydown', function (e){ 
+    keysDown[e.keyCode] = true;
+
+}, false)
+
+window.addEventListener('keyup', function (e){ 
+    delete keysDown[e.keyCode];
+
+}, false)
+
+// reseta o jogo quando o jogador pega o monstro
+const reset = function (){
+    hero.x = canvas.width / 2;
+    hero.y = canvas.height / 2;
+
+    //posiciona monstros randomicamente na tela
+    monster.x = 44 + (Math.randow() * (canvas.width - 75)) // 44 é o tamanho da sprite e 75 é pra ele n grudar e cortar o mosntro no meio caso ele spawne perto
+
+    monster.y = 70 + (Math.randow() * (canvas.height - 75)) 
+
+}
+
+//atualiza os objetos do jogo
+const update = function(modifier){
+    if (38 in keysDown){ // press seta pra cima
+        hero.y -= hero.speed * modifier // ele subtrai o valor de hero.y, com sua speed
+
+
+    } 
+    if (40 in keysDown){ // tecla pra baixo
+        hero.y += hero.speed * modifier
+    }
+    if (37 in keysDown){ // seta pra esquerda
+        hero.x -= hero.speed * modifier
+    }
+    if (39 in keysDown){ // tecla pra direita
+        hero.x += hero.speed * modifier
+    }
+
+    //saber se os personagens se encontam
+    if(
+        hero.x <= (monster.x + 44) && monster.x <= (hero.x + 44) && hero.y <= (monster.y + 70) && monster.y <= (hero.y + 70)
+    ){
+        ++monsterPego
+        reset()
+    
+    }
+
+}
