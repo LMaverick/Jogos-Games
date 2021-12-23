@@ -26,7 +26,14 @@ var loadState = {
             game.load.audio('loseitem', 'sfx/loseitem.ogg');
             game.load.audio('music', 'sfx/music.ogg');
 
+        
 
+
+    },
+
+    // chama o menu.js
+    create: function(){
+        game.state.start('menu');
     }
 
 };

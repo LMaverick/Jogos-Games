@@ -1,1 +1,6 @@
-var stage1State = {};
+var stage1State = {
+    create:function(){
+        alert();
+    }
+
+};
