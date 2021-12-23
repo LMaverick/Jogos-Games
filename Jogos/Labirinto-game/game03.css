@@ -1,0 +1,32 @@
+*{
+	margin:0;
+	padding:0;
+	border:0;
+}
+
+body{
+	background-color: #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+@font-face{
+	font-family: emulogic;
+	src: url('emulogic.ttf');
+}
+
+h1{
+    font-size: 2.5em;
+    color: #fff;
+    font-family: emulogic;
+    text-align: center;
+    padding: 5px 2px;
+}
+
+.hidden{
+	font-family: emulogic;
+	visibility: hidden;
+	position: absolute;
+}
