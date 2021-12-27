@@ -26,7 +26,8 @@ var loadState = {
             game.load.audio('loseitem', 'sfx/loseitem.ogg');
             game.load.audio('music', 'sfx/music.ogg');
 
-        
+            //adiciona os recursos de fisica para mover o personagem
+            game.physics.startSystem(Phaser.Physics.ARCADE);        
 
 
     },
