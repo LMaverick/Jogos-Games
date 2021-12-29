@@ -64,6 +64,13 @@ var stage1State = {
         this.coin = game.add.sprite(this.coin.position.x,this.coin.position.y,'coin');//cria a image
         this.coin.anchor.set(.5);
         this.coin.animations.add('spin',[0,1,2,3,4,5,6,7,8,9],10,true).play();// cria a animação
+        game.physics.arcade.enable(this.coin); // cria a fisica na moeda
+
+
+        //coletar a moeda
+        this.coins = 0; //cria a variavel de pontos de coins
+        this.txtCoins = game.add.text(15,15,'Moedas: ' + this.getText(this.coins),{font:'15px emulogic', fill:'#fff'}); //cria o texto na tela
+
 
 
         //controles do jogo
@@ -74,7 +81,30 @@ var stage1State = {
         game.physics.arcade.collide(this.player,this.blocks); //adicionaa a colisão do player ao bloco
         this.movePlayer();
 
+        game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
+
     },
+
+    //atualiza o texto das moedas para 3 digitos
+    getText: function(value){
+        if(value < 10){
+            return '00' + value.toString();
+        } else if(value < 100){
+            return '0' + value.toString();
+        } else {
+            return value.toString();
+        }
+
+    },
+
+    //faz o person pegar a moeda
+    getCoin: function(){
+        this.coins++;//adiciona moeda
+        this.txtCoins.text = 'Moedas: ' + this.getText(this.coins);//atualiza o texto
+        this.coin.position = this.newPosition(); // coloca em outra posição a moeda
+
+    },
+
     movePlayer: function(){ //cria o movimento do personagem
         //reseta a velocidade do player
         this.player.body.velocity.x = 0;
