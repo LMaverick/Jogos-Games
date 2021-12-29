@@ -75,11 +75,28 @@ var stage1State = {
 
         //controles do jogo
         this.controls = game.input.keyboard.createCursorKeys();
+
+        //inimigo
+        this.enemy = game.add.sprite(75,75,'enemy'); // adiciona o sprite
+        this.enemy.anchor.set(.5); //centraliza
+        game.physics.arcade.enable(this.enemy); //adiciona fisica ao inimigo
+
+        //animação de movimento do inimigo
+        this.enemy.animations.add('goDown',[0,1,2,3,4,5,6,7],12,true); 
+        this.enemy.animations.add('goUp',[8,9,10,11,12,13,14,15],12,true); 
+        this.enemy.animations.add('goLeft',[16,17,18,19,20,21,22,23],12,true); 
+        this.enemy.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
+        this.enemy.direction = "DOWN"; //direção de movimento inicial do enemy
+
+
     },
 
     update: function(){
         game.physics.arcade.collide(this.player,this.blocks); //adicionaa a colisão do player ao bloco
+
         this.movePlayer();
+        this.moveEnemy();
+        
 
         game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
 
@@ -102,6 +119,53 @@ var stage1State = {
         this.coins++;//adiciona moeda
         this.txtCoins.text = 'Moedas: ' + this.getText(this.coins);//atualiza o texto
         this.coin.position = this.newPosition(); // coloca em outra posição a moeda
+
+    },
+
+    moveEnemy: function(){//inteligencia do enemy
+
+        if(Math.floor(this.enemy.x - 25)%50 === 0 && Math.floor(this.enemy.y - 25)%50 === 0){ //vê se o player esta no meio de uma celula
+            var enemyCol = Math.floor(this.enemy.x/50); //pega o x que o player está e abaixo pega o Y
+            var enemyRow = Math.floor(this.enemy.y/50);
+
+            var validPath = []; //faz o inimigo escolher um caminho
+
+            if(this.maze[enemyRow][enemyCol -1] !== 1 && this.enemy.direction !== 'RIGHT'){//faz ele verificar o caminho q esta indo
+                validPath.push('LEFT');
+            }
+            if(this.maze[enemyRow][enemyCol +1] !== 1 && this.enemy.direction !== 'LEFT'){
+                validPath.push('RIGHT');
+            }
+            if(this.maze[enemyRow -1][enemyCol] !== 1 && this.enemy.direction !== 'DOWN'){
+                validPath.push('UP');
+            }
+            if(this.maze[enemyRow +1][enemyCol] !== 1 && this.enemy.direction !== 'UP'){
+                validPath.push('DOWN');
+            }
+
+            //faz ele ir pra direção que puder exceto o caminho q já veio
+            this.enemy.direction = validPath[Math.floor(Math.random()*validPath.lenght)];
+
+        }
+        //move o enemy e muda a animação
+        switch(this.enemy.direction){
+            case 'LEFT':
+                this.enemy.x -=1;
+                this.enemy.animations.play('goLeft');
+                break;
+            case 'RIGHT':
+                this.enemy.x +=1;
+                this.enemy.animations.play('goRight');
+                break;
+            case 'UP':
+                this.enemy.y -=1;
+                this.enemy.animations.play('goUp');
+                break;
+            case 'DOWN':
+                this.enemy.y +=1;
+                this.enemy.animations.play('goDown');
+                break;
+        }
 
     },
 
