@@ -7,14 +7,14 @@ var stage1State = {
         this.maze = [// 1 = bloco, 0 = caminho, 2 = player spawn, 3 =moedas spawn
             //ficam dentro de uma submatrix
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],//15 column 10 row
-            [1,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+            [1,3,0,3,1,0,0,0,0,0,0,0,0,0,1],
             [1,0,1,1,0,0,1,0,1,1,1,0,1,0,1],
-            [1,0,0,0,0,1,0,0,1,2,1,0,0,0,1],
+            [1,0,0,0,0,1,0,0,1,2,1,3,0,0,1],
             [1,1,1,0,1,0,0,0,0,0,1,1,1,0,1],
-            [1,0,0,0,1,0,1,0,1,1,1,0,1,0,1],
+            [1,0,0,0,1,0,1,3,1,1,1,3,1,0,1],
             [1,0,1,0,0,0,0,0,0,1,0,0,1,0,1],
             [1,0,1,0,1,1,0,1,0,1,1,0,1,0,1],
-            [1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+            [1,3,0,0,0,0,0,1,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 
         ];
@@ -22,6 +22,9 @@ var stage1State = {
         this.blocks = game.add.group();
         //faz com q os blocos tem corpo fisico
         this.blocks.enableBody = true;
+
+        //cria o array que mostra todas as posiveis posição das moedas
+        this.coinPositions = [];
 
         for(var row in this.maze){
             for(var col in this.maze[row]){
@@ -45,9 +48,23 @@ var stage1State = {
                     this.player.animations.add('goUp',[8,9,10,11,12,13,14,15],12,true); 
                     this.player.animations.add('goLeft',[16,17,18,19,20,21,22,23],12,true); 
                     this.player.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
+                } else if (tile === 3){//cria as moedas
+                var position = {
+                    x: x + 25,
+                    y: y +25,
+                };
+                this.coinPositions.push(position);
+
                 }
             }
         }
+        //cria a moeda de fato, o objeto em si
+        this.coin = {};
+        this.coin.position = this.newPosition();
+        this.coin = game.add.sprite(this.coin.position.x,this.coin.position.y,'coin');//cria a image
+        this.coin.anchor.set(.5);
+        this.coin.animations.add('spin',[0,1,2,3,4,5,6,7,8,9],10,true).play();// cria a animação
+
 
         //controles do jogo
         this.controls = game.input.keyboard.createCursorKeys();
@@ -102,5 +119,16 @@ var stage1State = {
         this.player.animations.stop();
     }
 
+    },
+
+    //novas posiçoes da moeda ao pegar
+    newPosition: function(){
+        var pos = this.coinPositions[Math.floor(Math.random() * this.coinPositions.length)]; // sortei uma posição nova pra moeda
+
+        while(this.coin.position === pos){ // caso seja a mesma posição ele sorteia novamente
+            pos = this.coinPositions[Math.floor(Math.random() * this.coinPositions.length)];
+        }
+
+        return pos;
     }
 };
