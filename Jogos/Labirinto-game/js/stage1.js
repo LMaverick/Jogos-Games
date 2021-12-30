@@ -1,5 +1,20 @@
 var stage1State = {
     create:function(){
+         //cria o objeto musica quando carrega
+         this.music   = game.add.audio('music');
+         this.music.loop = true; // deixa em loop
+         this.music.volume = .5; // vai de 0 a 1 
+         this.music.play();//agr sim toca a musica
+
+         //agora os sons e efeitos sonoros
+         this.sndCoin = game.add.audio('getitem');//pega a moeda
+         this.sndCoin.volume = .5;
+
+
+         this.sndLoseCoin = game.add.audio('loseitem');//perde a moeda
+         this.sndLoseCoin.volume = .5;
+
+
         //adicionar imagem de fundo
         game.add.sprite(0,0,'bg');
 
@@ -86,10 +101,17 @@ var stage1State = {
         this.enemy.animations.add('goUp',[8,9,10,11,12,13,14,15],12,true); 
         this.enemy.animations.add('goLeft',[16,17,18,19,20,21,22,23],12,true); 
         this.enemy.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
-        this.enemy.direction = "DOWN"; //direção de movimento inicial do enemy
+        this.enemy.direction = "RIGHT"; //direção de movimento inicial do enemy
 
-
+        //particulas
+        this.emitter = game.add.emitter(0,0,15); //cria o emisor
+        this.emitter.makeParticles('part');//add a img da particula
+        this.emitter.setXSpeed(-50,50);//velocidade no eixo X
+        this.emitter.setYSpeed(-50,50);//velocidade no eixo Y
+        this.emitter.gravity.y = 0; //desativa a gravidade
+        
     },
+// update ========================================
 
     update: function(){
         game.physics.arcade.collide(this.player,this.blocks); //adicionaa a colisão do player ao bloco
@@ -99,6 +121,8 @@ var stage1State = {
         
 
         game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
+
+        game.physics.arcade.overlap(this.player,this.enemy,this.loseCoin,null,this); // colisão com o inimigo
 
     },
 
@@ -116,15 +140,35 @@ var stage1State = {
 
     //faz o person pegar a moeda
     getCoin: function(){
+        this.emitter.x = this.coin.position.x;
+        this.emitter.y = this.coin.position.y; //add particulas
+        this.emitter.start(true,500,null,15);
+
         this.coins++;//adiciona moeda
         this.txtCoins.text = 'Moedas: ' + this.getText(this.coins);//atualiza o texto
         this.coin.position = this.newPosition(); // coloca em outra posição a moeda
+        this.sndCoin.play(); //toca a musica de pegar moeda
 
+        
+    },
+
+    loseCoin: function(){
+        this.sndLoseCoin.play();
+
+        if(this.coins > 0){
+            this.emitter.x = this.player.position.x;
+            this.emitter.y = this.player.position.y; //add particulas
+            this.emitter.start(true,500,null,15);//cria as particulas, parametros (efeito de esxplosão, tempo de vida para sumir em miliseconds, caso tenha o intervalo aq seria os intervalo,quantas são criadas)
+
+            this.coins = 0;
+            this.txtCoins.text = 'Moedas: ' + this.getText(this.coins);
+
+        }
     },
 
     moveEnemy: function(){//inteligencia do enemy
 
-        if(Math.floor(this.enemy.x - 25)%50 === 0 && Math.floor(this.enemy.y - 25)%50 === 0){ //vê se o player esta no meio de uma celula
+        if(Math.floor(this.enemy.x -25)%50 === 0 && Math.floor(this.enemy.y -25)%50 === 0){ //vê se o player esta no meio de uma celula
             var enemyCol = Math.floor(this.enemy.x/50); //pega o x que o player está e abaixo pega o Y
             var enemyRow = Math.floor(this.enemy.y/50);
 
@@ -144,7 +188,7 @@ var stage1State = {
             }
 
             //faz ele ir pra direção que puder exceto o caminho q já veio
-            this.enemy.direction = validPath[Math.floor(Math.random()*validPath.lenght)];
+            this.enemy.direction = validPath[Math.floor(Math.random()*validPath.length)];
 
         }
         //move o enemy e muda a animação
