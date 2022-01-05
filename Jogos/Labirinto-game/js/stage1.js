@@ -110,6 +110,10 @@ var stage1State = {
         this.emitter.setYSpeed(-50,50);//velocidade no eixo Y
         this.emitter.gravity.y = 0; //desativa a gravidade
         
+
+        //exibir o score
+        this.txtScore = game.add.text(game.world.centerX,15,'Pontos: ' + this.getText(game.global.score),{font:'15px emulogic' ,fill:'#fff'});
+        this.txtScore.anchor.set(.5,0);
     },
 // update ========================================
 
@@ -136,7 +140,7 @@ var stage1State = {
             return value.toString();
         }
 
-    },
+    }, 
 
     //faz o person pegar a moeda
     getCoin: function(){
@@ -149,7 +153,14 @@ var stage1State = {
         this.coin.position = this.newPosition(); // coloca em outra posição a moeda
         this.sndCoin.play(); //toca a musica de pegar moeda
 
-        
+        //aaumenta o score quandoo pega moedas
+        game.global.score += 5;
+        this.txtScore.text = 'Pontos: ' + this.getText(game.global.score);
+
+        //caso o score seja maior q o highscore 
+        if(game.global.score > game.global.highScore){
+            game.global.highScore = game.global.score;
+        }
     },
 
     loseCoin: function(){

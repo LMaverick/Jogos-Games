@@ -8,6 +8,24 @@ var menuState = {
         this.music.play();//agr sim toca a musica
 
 
+        //verifica se tem score registrado no storage do navegador
+        if(!localStorage.getItem('Labirinto_highScore')){
+            localStorage.setItem('Labirinto_highScore',0); // cria caso não tenha
+
+        }
+
+        if(game.global.highScore > localStorage.getItem('Labirinto_highScore')){ //se o record atual for maior  q o armazenado ent...
+
+            localStorage.setItem('Labirinto_highScore',game.global.highScore);
+
+        } else {
+            game.global.highScore = localStorage.getItem('Labirinto_highScore');
+        }
+
+        var txtHighScore = game.add.text(game.world.centerX,350,'Pontos: ' + game.global.highScore,{font:'20px emulogic',fill:'#D16111'});
+        txtHighScore.anchor.set(.5);
+        txtHighScore.alpha = 0;
+
 
         //cria o texto
         var txtLabirinto = game.add.text(game.world.centerX,150,'Labirinto',{font:'40px emulogic', fill:'#fff'});
@@ -22,8 +40,15 @@ var menuState = {
 
         //permite apertar enter pra iniciar o jogo
         game.time.events.add(1000,function(){
+            game.add.tween(txtHighScore
+            ).to({alpha:1},800).to({alpha:0},800).loop().start(); //faz o texto do highscore piscar
+
+
             var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER); // recebe e entende o enter
             enterKey.onDown.addOnce(this.startGame,this);//chama a funcção startGame
+
+            game.add.tween(txtPressStart
+                ).to({alpha:1},500).to({alpha:0},500).loop().start()
         },this);
 
     },

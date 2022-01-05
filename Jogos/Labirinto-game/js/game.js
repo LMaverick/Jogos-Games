@@ -1,5 +1,11 @@
 var game = new Phaser.Game(750, 500,Phaser.CANVAS); // referenciando a biblioteca da Phaser, 750 e 500 é as dimensões, o phaser é vc selecionando ele e usando a tecnologia CANVAS
 
+
+	game.global = {
+		score:0,
+		highScore: 0
+	}
+
 	game.state.add('boot',bootState);
 	game.state.add('load',loadState);
 	game.state.add('menu',menuState);
