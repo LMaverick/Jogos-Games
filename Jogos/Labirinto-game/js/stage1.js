@@ -1,5 +1,8 @@
 var stage1State = {
     create:function(){
+
+        this.onGame = true; //faz o game funcionar
+
          //cria o objeto musica quando carrega
          this.music   = game.add.audio('music');
          this.music.loop = true; // deixa em loop
@@ -112,22 +115,75 @@ var stage1State = {
         
 
         //exibir o score
-        this.txtScore = game.add.text(game.world.centerX,15,'Pontos: ' + this.getText(game.global.score),{font:'15px emulogic' ,fill:'#fff'});
+        this.txtScore = game.add.text(game.world.centerX,15,'Pontos: ' + this.getText(game.global.score),{font:'15px emulogic',fill:'#fff'});
         this.txtScore.anchor.set(.5,0);
+
+        //timer
+        this.time = 10;
+        this.txtTimer = game.add.text(game.world.width - 15,15,'Tempo: '+ this.getText(this.time),{font:'15px emulogic', fill:'#fff'});
+        this.txtTimer.anchor.set(1,0);
+
+        this.timer = game.time.events.loop(1000, function(){ //temporizador
+            this.time--;
+            this.txtTimer.text = 'Tempo: '+ this.getText(this.time);
+        },this);
     },
 // update ========================================
 
     update: function(){
-        game.physics.arcade.collide(this.player,this.blocks); //adicionaa a colisão do player ao bloco
+        if(this.onGame){
+            game.physics.arcade.collide(this.player,this.blocks); //adicionaa a colisão do player ao bloco
 
-        this.movePlayer();
-        this.moveEnemy();
-        
+            this.movePlayer();
+            this.moveEnemy();
+            
+    
+            game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
+    
+            game.physics.arcade.overlap(this.player,this.enemy,this.loseCoin,null,this); // colisão com o inimigo
+    
+            //faz o timer passar de fase ou dar game over
+            if(this.time < 1 || this.coins >= 10){
+                this.gameOver();
+            }
 
-        game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
+        }
+       
 
-        game.physics.arcade.overlap(this.player,this.enemy,this.loseCoin,null,this); // colisão com o inimigo
+    },
 
+    gameOver: function(){
+        this.onGame = false;
+        game.time.events.remove(this.timer); //para o timer
+        //para o player
+        this.player.body.velocity.x = 0;
+        this.player.body.velocity.y = 0;
+        this.player.animations.stop();
+        this.player.frame = 0;
+        //para o inimigo
+        this.enemy.animations.stop();
+        this.enemy.frame = 0;
+
+        if(this.coins >= 10){//faz ele passar de fase
+
+        }else {//não passou de fase
+            var txtGameOver = game.add.text(game.world.centerX,150,'VOCE PERDEU, NAO PEGOU MAIS QUE 10 MOEDAS ',{font:'15px emulogic', fill:'#fff'});
+            txtGameOver.anchor.set(.5);
+
+        }
+        //exibe o melhor score
+        var txtBestScore = game.add.text(game.world.centerX,350,'MAIORES PONTOS: '+ this.getText(game.global.highScore),{font:'20px emulogic', fill:'#fff'});
+        txtBestScore.anchor.set(.5);
+
+        //recoloca na tela inical apos perder
+        game.time.events.add(5000,function(){
+            this.music.stop();
+            if(this.coins >=10){ //chama a proxima fase
+
+            } else { //volta pra tela inicial
+                game.state.start('menu');
+            }
+        },this);
     },
 
     //atualiza o texto das moedas para 3 digitos
