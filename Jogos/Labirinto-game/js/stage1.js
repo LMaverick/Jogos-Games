@@ -119,7 +119,7 @@ var stage1State = {
         this.txtScore.anchor.set(.5,0);
 
         //timer
-        this.time = 10;
+        this.time = 120;
         this.txtTimer = game.add.text(game.world.width - 15,15,'Tempo: '+ this.getText(this.time),{font:'15px emulogic', fill:'#fff'});
         this.txtTimer.anchor.set(1,0);
 
