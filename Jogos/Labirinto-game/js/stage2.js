@@ -178,7 +178,7 @@ var stage2State = {
         this.enemy.frame = 0;
 
         if(this.coins >= 10){//faz ele passar de fase
-            var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE PASSOU DE FASE, VAMOS PARA A PROXIMA',{font:'15px emulogic', fill:'#fff'});
+            var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE FINALIZOU O JOGO, OBRIGADO POR JOGAR',{font:'15px emulogic', fill:'#fff'});
             txtLevelComplete.anchor.set(.5);
 
             //bonus de tempo por passar de fase

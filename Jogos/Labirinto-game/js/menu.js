@@ -7,6 +7,8 @@ var menuState = {
         this.music.volume = .5; // vai de 0 a 1 
         this.music.play();//agr sim toca a musica
 
+        game.global.score = 0; //reseta o score pra n acumular
+
 
         //verifica se tem score registrado no storage do navegador
         if(!localStorage.getItem('Labirinto_highScore')){
