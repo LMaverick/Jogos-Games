@@ -95,7 +95,7 @@ var stage2State = {
         this.controls = game.input.keyboard.createCursorKeys();
 
         //inimigo
-        this.enemy = game.add.sprite(75,75,'enemy'); // adiciona o sprite
+        this.enemy = game.add.sprite(275,400,'enemy'); // adiciona o sprite e o inimigo
         this.enemy.anchor.set(.5); //centraliza
         game.physics.arcade.enable(this.enemy); //adiciona fisica ao inimigo
 
@@ -104,7 +104,7 @@ var stage2State = {
         this.enemy.animations.add('goUp',[8,9,10,11,12,13,14,15],12,true); 
         this.enemy.animations.add('goLeft',[16,17,18,19,20,21,22,23],12,true); 
         this.enemy.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
-        this.enemy.direction = "UP"; //direção de movimento inicial do enemy
+        this.enemy.direction = "LEFT"; //direção de movimento inicial do enemy
 
         //particulas
         this.emitter = game.add.emitter(0,0,15); //cria o emisor
@@ -165,7 +165,7 @@ var stage2State = {
         this.enemy.frame = 0;
 
         if(this.coins >= 1){//faz ele passar de fase
-            var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE PASSOU DE FASE,VAMOS PARA A PROXIMA',{font:'15px emulogic', fill:'#fff'});
+            var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE PASSOU DE FASE, VAMOS PARA A PROXIMA',{font:'15px emulogic', fill:'#fff'});
             txtLevelComplete.anchor.set(.5);
 
             //bonus de tempo por passar de fase
