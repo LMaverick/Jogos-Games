@@ -95,9 +95,13 @@ var stage2State = {
         this.controls = game.input.keyboard.createCursorKeys();
 
         //inimigo
-        this.enemy = game.add.sprite(275,400,'enemy'); // adiciona o sprite e o inimigo
+        this.enemy = game.add.sprite(275,425,'enemy'); // adiciona o sprite e o inimigo
         this.enemy.anchor.set(.5); //centraliza
         game.physics.arcade.enable(this.enemy); //adiciona fisica ao inimigo
+        //inimigo 2
+        this.enemy2 = game.add.sprite(575,425,'enemy');
+        this.enemy2.anchor.set(.5); 
+        game.physics.arcade.enable(this.enemy2); 
 
         //animação de movimento do inimigo
         this.enemy.animations.add('goDown',[0,1,2,3,4,5,6,7],12,true); 
@@ -106,6 +110,14 @@ var stage2State = {
         this.enemy.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
         this.enemy.direction = "LEFT"; //direção de movimento inicial do enemy
 
+        //animação de movimento do inimigo
+        this.enemy2.animations.add('goDown',[0,1,2,3,4,5,6,7],12,true); 
+        this.enemy2.animations.add('goUp',[8,9,10,11,12,13,14,15],12,true); 
+        this.enemy2.animations.add('goLeft',[16,17,18,19,20,21,22,23],12,true); 
+        this.enemy2.animations.add('goRight',[24,25,26,27,28,29,30,31],12,true); 
+        this.enemy2.direction = "LEFT"; //direção de movimento inicial do enemy
+       
+       
         //particulas
         this.emitter = game.add.emitter(0,0,15); //cria o emisor
         this.emitter.makeParticles('part');//add a img da particula
@@ -119,7 +131,7 @@ var stage2State = {
         this.txtScore.anchor.set(.5,0);
 
         //timer
-        this.time = 110;
+        this.time = 180;
         this.txtTimer = game.add.text(game.world.width - 15,15,'Tempo: '+ this.getText(this.time),{font:'15px emulogic', fill:'#fff'});
         this.txtTimer.anchor.set(1,0);
 
@@ -141,9 +153,10 @@ var stage2State = {
             game.physics.arcade.overlap(this.player,this.coin,this.getCoin,null,this); // colisão com a moeda
     
             game.physics.arcade.overlap(this.player,this.enemy,this.loseCoin,null,this); // colisão com o inimigo
+            game.physics.arcade.overlap(this.player,this.enemy2,this.loseCoin,null,this); // colisão com o inimigo
     
             //faz o timer passar de fase ou dar game over
-            if(this.time < 1 || this.coins >= 1){
+            if(this.time < 1 || this.coins >= 10){
                 this.gameOver();
             }
 
@@ -164,7 +177,7 @@ var stage2State = {
         this.enemy.animations.stop();
         this.enemy.frame = 0;
 
-        if(this.coins >= 1){//faz ele passar de fase
+        if(this.coins >= 10){//faz ele passar de fase
             var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE PASSOU DE FASE, VAMOS PARA A PROXIMA',{font:'15px emulogic', fill:'#fff'});
             txtLevelComplete.anchor.set(.5);
 
@@ -197,8 +210,8 @@ var stage2State = {
         //recoloca na tela inical apos perder
         game.time.events.add(5000,function(){
             this.music.stop();
-            if(this.coins >=1){ //chama a proxima fase
-                game.state.start('stage1');
+            if(this.coins >=10){ //chama a proxima fase
+                game.state.start('end');
             } else { //volta pra tela inicial
                 game.state.start('menu');
             }
@@ -294,6 +307,49 @@ var stage2State = {
             case 'DOWN':
                 this.enemy.y +=1;
                 this.enemy.animations.play('goDown');
+                break;
+        }
+        //inimigo 2
+        if(Math.floor(this.enemy2.x -25)%50 === 0 && Math.floor(this.enemy2.y -25)%50 === 0){ //vê se o player esta no meio de uma celula
+            var enemyCol = Math.floor(this.enemy2.x/50); //pega o x que o player está e abaixo pega o Y
+            var enemyRow = Math.floor(this.enemy2.y/50);
+
+            var validPath = []; //faz o inimigo escolher um caminho
+
+            if(this.maze[enemyRow][enemyCol -1] !== 1 && this.enemy2.direction !== 'RIGHT'){//faz ele verificar o caminho q esta indo
+                validPath.push('LEFT');
+            }
+            if(this.maze[enemyRow][enemyCol +1] !== 1 && this.enemy2.direction !== 'LEFT'){
+                validPath.push('RIGHT');
+            }
+            if(this.maze[enemyRow -1][enemyCol] !== 1 && this.enemy2.direction !== 'DOWN'){
+                validPath.push('UP');
+            }
+            if(this.maze[enemyRow +1][enemyCol] !== 1 && this.enemy2.direction !== 'UP'){
+                validPath.push('DOWN');
+            }
+
+            //faz ele ir pra direção que puder exceto o caminho q já veio
+            this.enemy2.direction = validPath[Math.floor(Math.random()*validPath.length)];
+
+        }
+        //move o enemy e muda a animação
+        switch(this.enemy2.direction){
+            case 'LEFT':
+                this.enemy2.x -=1;
+                this.enemy2.animations.play('goLeft');
+                break;
+            case 'RIGHT':
+                this.enemy2.x +=1;
+                this.enemy2.animations.play('goRight');
+                break;
+            case 'UP':
+                this.enemy2.y -=1;
+                this.enemy2.animations.play('goUp');
+                break;
+            case 'DOWN':
+                this.enemy2.y +=1;
+                this.enemy2.animations.play('goDown');
                 break;
         }
 

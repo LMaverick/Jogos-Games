@@ -143,7 +143,7 @@ var stage1State = {
             game.physics.arcade.overlap(this.player,this.enemy,this.loseCoin,null,this); // colisão com o inimigo
     
             //faz o timer passar de fase ou dar game over
-            if(this.time < 1 || this.coins >= 1){
+            if(this.time < 1 || this.coins >= 10){
                 this.gameOver();
             }
 
@@ -164,7 +164,7 @@ var stage1State = {
         this.enemy.animations.stop();
         this.enemy.frame = 0;
 
-        if(this.coins >= 1){//faz ele passar de fase
+        if(this.coins >= 10){//faz ele passar de fase
             var txtLevelComplete = game.add.text(game.world.centerX,150,'VOCE PASSOU DE FASE, VAMOS PARA A PROXIMA',{font:'15px emulogic', fill:'#fff'});
             txtLevelComplete.anchor.set(.5);
 
@@ -197,7 +197,7 @@ var stage1State = {
         //recoloca na tela inical apos perder
         game.time.events.add(5000,function(){
             this.music.stop();
-            if(this.coins >=1){ //chama a proxima fase
+            if(this.coins >=10){ //chama a proxima fase
                 game.state.start('stage2');
             } else { //volta pra tela inicial
                 game.state.start('menu');
